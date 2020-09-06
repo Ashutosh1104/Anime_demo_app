@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useRef, useCallback } from 'react'
+import useAnimeSearch from './components/anime/AnimeSearch'
+import AnimeItem from './components/anime/AnimeItem'
+import Header from './components/ui/Header'
+import './App.css'
 
-function App() {
+export default function App() {
+  const [query, setQuery] = useState('')
+  const [pageNumber, setPageNumber] = useState(1)
+
+  const {
+    animes,
+    hasMore,
+    loading,
+    error
+  } = useAnimeSearch(query, pageNumber)
+
+  const observer = useRef()
+  const lastAnimeElementRef = useCallback(node => {
+    if (loading) return
+    if (observer.current) observer.current.disconnect()
+     observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        console.log('visible')
+        //setPageNumber(prevPageNumber => prevPageNumber + 1)
+      }
+    })
+    if (node) observer.current.observe(node)
+  }, [loading, hasMore])
+
+  function handleSearch(e) {
+    setQuery(e.target.value)
+    setPageNumber(1)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <div className="cards">
+      {animes.map((anime, index) => {
+        if (animes.length === index + 1) {
+          return <div ref={lastAnimeElementRef} key={anime.name}><AnimeItem anime={anime}/></div>
+        } else {
+          return <div key={anime.name}><AnimeItem anime={anime}/></div>
+        }
+      })}
+      <div>{loading && 'Loading...'}</div>
+      <div>{error && 'Error'}</div>
+      </div>
+    </>
+  )
 }
-
-export default App;
