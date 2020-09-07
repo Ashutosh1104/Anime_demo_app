@@ -1,23 +1,58 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react';
 
-const AnimeItem = ({ anime }) => {
+function AnimeItem({anime}) {
   return (
-    <div className='card'>
-      <div className='card-inner'>
-        <div className='card-front'>
-          <img src={anime.image} alt='' />
-        </div>
-        <div className='card-back'>
-          <h1>{anime.name}</h1>
-          <ul>
-            <li>
-              <strong>Alter Name:</strong> {anime.altName}
-            </li>
-          </ul>
-        </div>
-      </div>
+    <>
+    <img className="card-img" src={anime.image} alt='' />
+    <Navbar anime={anime}>
+        <span className="card-title"><strong>{anime.name}</strong></span>
+        <NavItem anime={anime} icon ='😄'>
+              <DropdownMenu/>
+        </NavItem>
+    </Navbar>
+    </>
+  );
+}
+function Navbar(props) {
+  return (
+    <nav className="navbar">
+      <ul className="navbar-nav">{props.children}</ul>
+    </nav>
+  );
+}
+
+function NavItem(props) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <li className="nav-item">
+      <a href="#" className="icon-button" onClick={() => setOpen(!open)}>
+        {props.icon}
+      </a>
+
+      {open && props.children}
+    </li>
+  );
+}
+
+function DropdownMenu() {
+
+  function DropdownItem(props) {
+    return (
+      <a href="#" className="menu-item">
+        <span className="icon-button">{props.leftIcon}</span>
+        {props.children}
+        <span className="icon-right">{props.rightIcon}</span>
+      </a>
+    );
+  }
+  return(
+    <div className='dropdown'>
+      <DropdownItem>Profiles</DropdownItem>
+      <DropdownItem rightIcon='🦘'>More</DropdownItem>
+      <DropdownItem leftIcon = '🐸'>Plot</DropdownItem>
     </div>
   )
 }
 
-export default AnimeItem
+export default AnimeItem;
