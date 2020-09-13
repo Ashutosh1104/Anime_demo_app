@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 
-function AnimeItem({anime}) {
+function AnimeItem({ anime, setActiveExpansion, activeExpand }) {
   return (
     <>
-    <img className="card-img" src={anime.image} alt='' />
-    <Navbar anime={anime}>
-        <span className="card-title"><strong>{anime.name}</strong></span>
-        <NavItem anime={anime} icon ='😄'>
-              <DropdownMenu/>
+      <div className="card-img-container"><img className="card-img" src={anime.image} alt='' /></div>
+      <Navbar anime={anime}>
+        <li className="card-title"><span><strong>{anime.name}</strong></span></li>
+        <NavItem activeExpand={activeExpand} setActiveExpansion={setActiveExpansion} anime={anime} icon='😄'>
         </NavItem>
-    </Navbar>
+      </Navbar>
     </>
   );
 }
@@ -21,38 +20,22 @@ function Navbar(props) {
   );
 }
 
-function NavItem(props) {
-  const [open, setOpen] = useState(false);
 
+function NavItem(props) {
   return (
     <li className="nav-item">
-      <a href="#" className="icon-button" onClick={() => setOpen(!open)}>
+      <button className="expand-button" onClick={() => {
+        if (props.activeExpand === props.anime.name) {
+          props.setActiveExpansion('')
+        }
+        else {
+          props.setActiveExpansion(props.anime.name)
+        }
+      }}>
         {props.icon}
-      </a>
-
-      {open && props.children}
+      </button>
     </li>
   );
-}
-
-function DropdownMenu() {
-
-  function DropdownItem(props) {
-    return (
-      <a href="#" className="menu-item">
-        <span className="icon-button">{props.leftIcon}</span>
-        {props.children}
-        <span className="icon-right">{props.rightIcon}</span>
-      </a>
-    );
-  }
-  return(
-    <div className='dropdown'>
-      <DropdownItem>Profiles</DropdownItem>
-      <DropdownItem rightIcon='🦘'>More</DropdownItem>
-      <DropdownItem leftIcon = '🐸'>Plot</DropdownItem>
-    </div>
-  )
 }
 
 export default AnimeItem;

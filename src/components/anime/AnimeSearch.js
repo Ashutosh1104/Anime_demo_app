@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-export default function useAnimeSearch(query, pageNumber) {
+export default function useAnimeSearch(pageNumber) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [animes, setanimes] = useState([])
   const [hasMore, setHasMore] = useState(false)
-
-  useEffect(() => {
-    setanimes([])
-  }, [query])
 
   useEffect(() => {
     setLoading(true)
@@ -31,7 +27,7 @@ export default function useAnimeSearch(query, pageNumber) {
       setError(true)
     })
     return () => cancel()
-  }, [query, pageNumber])
+  }, [pageNumber])
 
   return { loading, error, animes, hasMore }
 }
